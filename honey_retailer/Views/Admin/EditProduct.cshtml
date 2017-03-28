@@ -1,0 +1,55 @@
+﻿@model honey_retailer.Models.Product
+    @using honey_retailer.Models
+
+    @{
+        ViewBag.Title = "Изменение товара " + Model.Name;
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+
+    <div class="panel">
+        <div class="panel-heading">
+            @if (ViewBag.New == true && Html.ValidationSummary() != MvcHtmlString.Empty)
+            {
+                <h3>Добавление нового товара</h3>
+                ViewBag.New = false;
+            }
+            else
+            {
+                <h3>Изменение товара "@Model.Name"</h3>
+            }
+        </div>
+        @using (Html.BeginForm("EditProduct", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="panel-body">
+                @Html.HiddenFor(p => p.CategoryId)
+                @Html.HiddenFor(p => p.Id)
+                @Html.HiddenFor(p => p.ImageName)
+                <label>Название</label>
+                @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
+                <p>@Html.ValidationMessageFor(p => p.Name)</p>
+                <label>Описание</label>
+                @Html.TextAreaFor(p => p.Description, new { @class = "form-control", rows = 5 })
+                <p>@Html.ValidationMessageFor(p => p.Description)</p>
+                <label>Цена (через точку)</label>
+                @Html.TextBoxFor(p => p.Price, new { @class = "form-control" })
+                <p>@Html.ValidationMessageFor(p => p.Price)</p>
+                <label>Фото</label>
+                <p>
+                    @if (Model.ImageName == null)
+                {
+                        <input type="file" name="upload" class="form-control" />
+                    }
+                    else
+                    {
+                        //<img src="@Url.Content(Model.ImageName)" alt="Image" />
+                        <img src="~/Images/@Model.ImageName" width="384" height="216" />
+                        <input type="file" name="upload" class="form-control" />
+                    }
+                </p>
+            </div>
+            <div class="panel-footer">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                @Html.ActionLink("Закрыть и вернуться к списку категорий и товаров", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        }
+    </div>

@@ -1,0 +1,68 @@
+﻿@using honey_retailer.Models
+@model IEnumerable<Category>
+
+@{
+    ViewBag.Title = "Все категории";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Категории и товары</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-condensed table-bordered">
+            <tr>
+                <th style="width:5%;">ID</th>
+                <th style="width:30%;">Название категории</th>
+                <th style="width:10%;">Фото категории</th>
+                <th style="width:5%;">Количество товаров</th>
+                <th style="width:10%;">Действия</th>
+                <th style="width:40%;">Товары</th>
+            </tr>
+            @foreach (var cat in Model)
+            {
+                <tr>
+                    <td>@cat.Id</td>
+                    <td>@Html.ActionLink(cat.Name, "EditCategory", new { categoryId = cat.Id })</td>
+                    
+                    <td>
+                        @if (cat.ImageName == null)
+                        {
+                            <p>Фото еще не добавлено</p>
+                        }
+                        else
+                        {
+                            <img src="~/Images/@cat.ImageName" width="192" height="108" />
+                        }
+                    </td>
+                    <td>@cat.Products.Count</td>
+                    <td>
+                        @using (Html.BeginForm("DeleteCategory", "Admin"))
+                        {
+                            @Html.Hidden("categoryId", cat.Id)
+                            <input type="submit" class="btn btn-danger" value="Удалить" />
+                        }
+                    </td>
+                    <td>
+                        @foreach (var prod in cat.Products)
+                        {
+                            <p>
+                                @Html.ActionLink(prod.Name, "EditProduct", new { productId = prod.Id })
+                                @using (Html.BeginForm("DeleteProduct", "Admin"))
+                                {
+                                    @Html.Hidden("productId", prod.Id)
+                                    <input type="submit" class="btn btn-danger btn-xs" value="Удалить" />
+                                }
+                            </p>
+                        }
+                        @Html.ActionLink("Добавить новый товар", "CreateProduct", new { categoryId = cat.Id }, new { @class = "btn btn-success btn-xs" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="panel-footer">
+        @Html.ActionLink("Добавить новую категорию", "CreateCategory", null, new { @class = "btn btn-success" })
+    </div>
+</div>

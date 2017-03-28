@@ -1,0 +1,47 @@
+﻿@model honey_retailer.Models.Category
+
+@{
+    ViewBag.Title = "Изменение категории " + Model.Name;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        @if (ViewBag.New == true && Html.ValidationSummary() != MvcHtmlString.Empty)
+        {
+            <h3>Добавление новой категории</h3>
+            ViewBag.New = false;
+        }
+        else
+        {
+            <h3>Изменение категории "@Model.Name"</h3>
+        }
+    </div>
+    @using (Html.BeginForm("EditCategory", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="panel-body">
+            @Html.HiddenFor(c => c.Id)
+            @Html.HiddenFor(c => c.ImageName)
+            <label>Название</label>
+            @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
+            <p>@Html.ValidationMessageFor(c => c.Name)</p>
+            <label>Фото</label>
+            <p>
+                @if (Model.ImageName == null)
+                {
+                    <input type="file" name="upload" class="form-control" />
+                }
+                else
+                {
+                    <img src="~/Images/@Model.ImageName" width="384" height="216" />
+                    <input type="file" name="upload" class="form-control" />
+                }
+            </p>
+        </div>
+        <div class="panel-footer">
+            <input type="submit" value="Сохранить" class="btn btn-primary" />
+            @Html.ActionLink("Закрыть и вернуться к списку категорий и товаров", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>
+
